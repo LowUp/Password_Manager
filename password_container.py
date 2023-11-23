@@ -21,15 +21,24 @@ try:
 
             while True:
                 user_input = input(
-                    "\n*****************************************\n\t1 - List all passwords\n\t2 - Add a password\n\t3 - Update a record\n\t4 - Delete a record\n\tAny other key - exit\n*****************************************\n")
+                    "\n*****************************************\n\t1 - List services passwords\n\t2 - Add a password\n\t3 - Update a record\n\t4 - Delete a record\n\tAny other key - exit\n*****************************************\n")
                 cursor = connection.cursor()
                 if user_input == '1':
                     cursor.execute("select * from passwords;")
                     record = cursor.fetchall()
-                    print("| id | - | service | - | username | - | password |")
+                    print("| id | - | service |")
                     for count, value in enumerate(record):
                         print(
+                            f"| {value[0]} | - | {value[1]} |\n")
+                    
+                    passId = input("Choose password to reveal : \t")
+                    for count, value in enumerate(record):
+                        if value[0] == int(passId):
+                            print("| id | - | service | - | username | - | password |\n")
+                            print(
                             f"| {value[0]} | - | {value[1]} | - | {value[2]} | - | {value[3]} |\n")
+                            break
+
 
                 elif user_input == '2':
                     service = input("Input service name : \t")
@@ -48,13 +57,21 @@ try:
                     cursor.execute("select * from passwords;")
                     record = cursor.fetchall()
                     
-                    print("| id | - | service | - | username | - | password |")
+                    print("| id | - | service |")
                     
                     for count, value in enumerate(record):
                         print(
-                            f"| {value[0]} | - | {value[1]} | - | {value[2]} | - | {value[3]} |\n")
+                            f"| {value[0]} | - | {value[1]} |\n")
                     
                     id_input = int(input("Which one do you want to update ? \t"))
+                    
+                    for count, value in enumerate(record):
+                        if value[0] == int(id_input):
+                            print("| id | - | service | - | username | - | password |\n")
+                            print(
+                            f"| {value[0]} | - | {value[1]} | - | {value[2]} | - | {value[3]} |\n")
+                            break
+                    
                     print("Type 'no' & press ENTER to not modify values\n")
                     
                     service_input = input("Update service name : \t")
@@ -89,10 +106,10 @@ try:
                 elif user_input == '4':
                     cursor.execute("select * from passwords;")
                     record = cursor.fetchall()
-                    print("| id | - | service | - | username | - | password |")
+                    print("| id | - | service |")
                     for count, value in enumerate(record):
                         print(
-                            f"| {value[0]} | - | {value[1]} | - | {value[2]} | - | {value[3]} |\n")
+                            f"| {value[0]} | - | {value[1]} |\n")
                     id_input = int(
                         input("Which record do you want to delete ? \t"))
                     cursor.execute(
