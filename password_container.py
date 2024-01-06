@@ -26,12 +26,24 @@ def main():
             while True:
                 user_input = input(
                     "\n*****************************************\n\t1 - List services passwords\n\t2 - Add a password\n\t3 - Update a record\n\t4 - Delete a record\n\tAny other key - exit\n*****************************************\n")
-                cursor = connection.cursor()
+                
                 if user_input == '1':
                     bdd_connection.display_all_passwords()
                     
+                    while True:
+                        search_pass = input("\nSearch for a password ? (y/n): \t")
+                        search_pass = search_pass.lower()
+                        if search_pass == 'y':
+                            search = input("Type the service name : \t")
+                            bdd_connection.search_password(search)
+                        elif search_pass == 'n':
+                            break
+                        else:
+                            print("\nInvalid input !\n")
+                    
                     passId = input("Choose password to reveal : \t")
-                    bdd_connection.display_password(passId)
+                    if passId is not '':
+                        bdd_connection.display_password(passId)
 
                 elif user_input == '2':     
                     bdd_connection.add_password()

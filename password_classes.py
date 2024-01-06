@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 from dataclasses import dataclass
+import random
 
 @dataclass(frozen=True)
 class Query_manager:
@@ -13,6 +14,25 @@ class Query_manager:
             print("Connected to MySQL Server version ", db_Info)
         else:
             print("Error while connecting to MySQL", Error)
+    
+    def search_password(self, search_value) -> None:
+        cursor = self.connection.cursor()
+        cursor.execute(f"select * from passwords where service like '%{search_value}%';")
+        record = cursor.fetchall()
+        print("| id | - | service |")
+        for count, value in enumerate(record):
+            print(
+                f"| {value[0]} | - | {value[1]} |\n")
+        cursor.close()
+        
+    def generate_password(self, length: int) -> str:
+        characters: str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:<>,./?'
+        password: str = ""
+        random_string: str = ""
+        for i in range(length):
+            password += random.choice(characters)
+        print(f"Your password is : {password}")
+        return password
     
     def display_all_passwords(self) -> None:
         cursor = self.connection.cursor()
@@ -44,7 +64,8 @@ class Query_manager:
         cursor = self.connection.cursor()
         service = input("Input service name : \t")
         identifiant = input("Input username : \t")
-        mdp = input("Type your password : \t")
+        mdp = input("Type your password (leave blank to generate a random password): \t")
+        mdp = mdp or self.generate_password(20)
         cursor.execute(
             f"insert into passwords (service, identifiant, mdp) values ('{service}', '{identifiant}', '{mdp}');")
         self.connection.commit()
