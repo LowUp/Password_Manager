@@ -23,10 +23,7 @@ USER=YOUR_BDD_USERNAME
 PASSWORD=YOUR_BDD_PASSWORD
 MASTER_KEY=ENTER_MASTER_KEY
 ``````
-- Add your passwords to the table.
-- Generate a strong password.
-- Store the password in the table.
-- Retrieve the password when you need it.
+- Run the program : ````python3 password_container.py````
 
 ## Conclusion
 The password manager is a secure and easy-to-use tool that allows you to store your passwords in a safe place that is managed by you.
