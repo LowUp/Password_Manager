@@ -17,7 +17,7 @@ class Query_manager:
     
     def search_password(self, search_value) -> None:
         cursor = self.connection.cursor()
-        cursor.execute(f"select * from passwords where service like '%{search_value}%';")
+        cursor.execute(f"select * from passwords where service like %s;", (f"%{search_value}%",))
         record = cursor.fetchall()
         print("| id | - | service |")
         for count, value in enumerate(record):
@@ -46,7 +46,7 @@ class Query_manager:
     
     def display_password(self, id) -> None:
         cursor = self.connection.cursor()
-        cursor.execute(f"select * from passwords where id = {id};")
+        cursor.execute(f"select * from passwords where id = %s;", (id,))
         record = cursor.fetchall()
         
         if len(record) == 0:
@@ -67,14 +67,16 @@ class Query_manager:
         mdp = input("Type your password (leave blank to generate a random password): \t")
         mdp = mdp or self.generate_password(20)
         cursor.execute(
-            f"insert into passwords (service, identifiant, mdp) values ('{service}', '{identifiant}', '{mdp}');")
+            f"insert into passwords (service, identifiant, mdp) values (%s, %s, %s);", 
+            (service, identifiant, mdp)
+        )
         self.connection.commit()
         print("Password added")
         cursor.close()
     
     def edit_password(self, id) -> None:
         cursor = self.connection.cursor()
-        cursor.execute(f"select * from passwords where id = {id};")
+        cursor.execute(f"select * from passwords where id = %s;", (id,))
         record = cursor.fetchall()
         input_dict = {}
         
@@ -121,7 +123,7 @@ class Query_manager:
         
     def delete_password(self, id) -> None:
         cursor = self.connection.cursor()
-        cursor.execute(f"select * from passwords where id = {id};")
+        cursor.execute(f"select * from passwords where id = %s;", (id,))
         record = cursor.fetchall()
         
         if len(record) == 0:
@@ -129,7 +131,9 @@ class Query_manager:
             return None
         
         cursor.execute(
-            f"delete from passwords where id = {id} ")
+            f"delete from passwords where id = %s ", 
+            (id,)
+        )
         self.connection.commit()
         print("Record deleted !")
         cursor.close()
