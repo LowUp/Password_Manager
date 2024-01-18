@@ -6,12 +6,24 @@ from password_classes import Query_manager
 
 config = dotenv_values(".env")
 
+def search_loop(bdd_connection: object) -> None:
+    while True:
+        search_pass = input("\nSearch for a password ? (y/n): \t")
+        search_pass = search_pass.lower()
+        if search_pass == 'y':
+            search = input("Type the service name : \t")
+            bdd_connection.search_password(search)
+        elif search_pass == 'n':
+            break
+        else:
+            print("\nInvalid input !\n")
+
 def main():
     try:
         masterPass = getpass.getpass("Master password: \t")
         if masterPass != config['MASTER_KEY']:
             connection = None
-            raise Exception("Access denied !")
+            raise Error("Access denied !")
         else :
             
             connection = mysql.connector.connect(host=config['HOST'],
@@ -30,20 +42,13 @@ def main():
                 if user_input == '1':
                     bdd_connection.display_all_passwords()
                     
-                    while True:
-                        search_pass = input("\nSearch for a password ? (y/n): \t")
-                        search_pass = search_pass.lower()
-                        if search_pass == 'y':
-                            search = input("Type the service name : \t")
-                            bdd_connection.search_password(search)
-                        elif search_pass == 'n':
-                            break
-                        else:
-                            print("\nInvalid input !\n")
+                    search_loop(bdd_connection)
                     
                     passId = input("Choose password to reveal : \t")
                     if passId is not '':
                         bdd_connection.display_password(passId)
+                    else:
+                        print("\naborted")
 
                 elif user_input == '2':     
                     bdd_connection.add_password()
@@ -51,20 +56,33 @@ def main():
                 elif user_input == '3':
                     bdd_connection.display_all_passwords()
                     
-                    id_input = int(input("Which one do you want to update ? \t"))               
-                    bdd_connection.edit_password(id_input)
+                    search_loop(bdd_connection)
+                    
+                    id_input = input("Which one do you want to update ? \t") 
+                    if id_input is not '' and id_input.isdigit():        
+                        bdd_connection.edit_password(int(id_input))
+                    else:
+                        print("\naborted")
 
                 elif user_input == '4':
                     bdd_connection.display_all_passwords()
                     
-                    id_input = int(input("Which record do you want to delete ? \t"))
-                    bdd_connection.delete_password(id_input)
+                    search_loop(bdd_connection)
+                    
+                    id_input = input("Which record do you want to delete ? \t")
+                    if id_input is not '' and id_input.isdigit():
+                        bdd_connection.delete_password(int(id_input))
+                    else:
+                        print("\naborted")
 
                 else:
                     break
 
     except Error as e:
-        print("Error while connecting to MySQL", e)
+        if str(e) == "Access denied !":
+            print(e)
+        else :
+            print("Error while connecting to MySQL", e)
         
     finally:
         if connection != None:
