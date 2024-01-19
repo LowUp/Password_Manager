@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 import random
 from cryptography.fernet import Fernet
 import glob
+import csv
 
 @dataclass(frozen=False)
 class Query_manager:
@@ -160,6 +161,24 @@ class Query_manager:
         )
         self.connection.commit()
         print("Record deleted !")
+        cursor.close()
+    
+    def export_passwords(self, option: bool) -> None:
+        fernet = Fernet(self.key)
+        cursor = self.connection.cursor()
+        cursor.execute("select * from passwords;")
+        record = cursor.fetchall()
+        if len(record) == 0:
+            print("No password found")
+            return None
+        else:
+            with open("logs/passwords.csv", "w") as file:
+                writer = csv.writer(file)
+                writer.writerow(["id", "service", "username", "password"])
+                for count, value in enumerate(record):
+                    writer.writerow([value[0], value[1], value[2], value[3] if not option else fernet.decrypt(bytes(value[3], 'utf-8')).decode()])
+                print("Passwords exported to passwords.csv !")
+
         cursor.close()
     
     def close_connection(self) -> None:

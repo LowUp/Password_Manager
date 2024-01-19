@@ -17,6 +17,18 @@ def search_loop(bdd_connection: object) -> None:
             break
         else:
             print("\nInvalid input !\n")
+            
+def export_options() -> bool:
+    user_input = input("Decrypt passwords before export ? (y/n) : \t")
+    user_input = user_input.lower()
+    if user_input == 'y':
+        return True
+    elif user_input == 'n':
+        return False
+    else:
+        print("\nAborted !")
+
+# Main function
 
 def main():
     try:
@@ -37,7 +49,7 @@ def main():
 
             while True:
                 user_input = input(
-                    "\n*****************************************\n\t1 - List services passwords\n\t2 - Add a password\n\t3 - Update a record\n\t4 - Delete a record\n\tAny other key - exit\n*****************************************\n")
+                    "\n*****************************************\n\t1 - List services passwords\n\t2 - Add a password\n\t3 - Update a record\n\t4 - Delete a record\n\t5 - Export passwords to csv file\n\tAny other key - exit\n*****************************************\n")
                 
                 if user_input == '1':
                     bdd_connection.display_all_passwords()
@@ -74,6 +86,9 @@ def main():
                         bdd_connection.delete_password(int(id_input))
                     else:
                         print("\naborted")
+                
+                elif user_input == '5':
+                    bdd_connection.export_passwords(export_options())
 
                 else:
                     break
