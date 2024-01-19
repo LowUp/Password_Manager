@@ -16,8 +16,7 @@ To use the password manager, follow these steps:
 - install requirements : ````pip install -r requirements.txt````
 - Create a database and connect to it.
 - Create a table to store your passwords (see 'table_structure.sql').
-- Create a .env file and enter your DB info inside the file
-- Create a folder named ```logs``` at the root of the program
+- Create a .env file and enter your DB info inside the file (see below).
 ``````
 HOST=YOUR_HOST_NAME
 BDD=YOUR_BDD_NAME
@@ -25,6 +24,7 @@ USER=YOUR_BDD_USERNAME
 PASSWORD=YOUR_BDD_PASSWORD
 MASTER_KEY=ENTER_MASTER_KEY
 ``````
+- Create a folder named ```logs``` at the root of the program
 - Run the program : ````python3 password_container.py````
 ## Security
 Before being stored in the DB, passwords are encrypted with a Symmetric-key that is automatically generated in a file named ```key.txt```.
