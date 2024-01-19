@@ -7,6 +7,7 @@ The password manager has the following features:
 - Stores your passwords in a secure database
 - Generates strong passwords
 - Allows you to retrieve your passwords when you need them
+- Allows you to export your passwords in a csv file
 - Easy to use
 ## How to use
 To use the password manager, follow these steps:
