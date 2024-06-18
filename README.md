@@ -1,5 +1,5 @@
 # Password Manager
-This is a password manager that allows you to store your passwords in a secure database. The database must be a mysql database. You can use the password manager to generate strong passwords, encrypt, store, and retrieve whenever you need.
+This password manager lets you store your passwords in a secure database. The database must be a MySQL database. You can use the password manager to generate strong passwords, encrypt, store, and retrieve them whenever you need.
 
 ## Features
 The password manager has the following features:
@@ -7,7 +7,7 @@ The password manager has the following features:
 - Stores your passwords in a secure database
 - Generates strong passwords
 - Allows you to retrieve your passwords when you need them
-- Allows you to export your passwords in a csv file
+- Allows you to export your passwords in a CSV file
 - Easy to use
 ## How to use
 To use the password manager, follow these steps:
@@ -27,6 +27,6 @@ MASTER_KEY=ENTER_MASTER_KEY
 - Create a folder named ```logs``` at the root of the program
 - Run the program : ````python3 password_container.py````
 ## Security
-Before being stored in the DB, passwords are encrypted with a Symmetric-key that is automatically generated in a file named ```key.txt```.
+Before being stored in the DB, passwords are encrypted with a symmetric key automatically generated in a file named ```key.txt```.
 ## Conclusion
-The password manager is a secure and easy-to-use tool that allows you to store your passwords in a safe place that is managed by you.
+The password manager is a secure and easy-to-use tool that allows you to store your passwords in a safe place that you manage.
