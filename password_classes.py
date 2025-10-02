@@ -3,6 +3,7 @@ from mysql.connector import Error
 from dataclasses import dataclass, field
 import random
 from cryptography.fernet import Fernet
+from dotenv import dotenv_values
 import glob
 import csv
 
@@ -10,11 +11,13 @@ import csv
 class Query_manager:
     connection: mysql
     key: bytes = field(init=False)
+    config: dict = field(init=False, default_factory=dict)
     
     def __post_init__(self) -> None:
         # self.connection = mysql.connector.connect(host = self.host, database = self.database, user = self.user,password = self.password)
         if self.connection.is_connected():
             db_Info = self.connection.get_server_info()
+            self.config = dotenv_values(".env")
             print("Connected to MySQL Server version ", db_Info)
             if not glob.glob("logs/key.txt"):
                 print("Genereting key...")
@@ -29,7 +32,7 @@ class Query_manager:
     
     def search_password(self, search_value) -> None:
         cursor = self.connection.cursor()
-        cursor.execute(f"select * from passwords where service like %s;", (f"%{search_value}%",))
+        cursor.execute(f"select * from {self.config['TABLE']} where service like %s;", (f"%{search_value}%",))
         record = cursor.fetchall()
         print("| id | - | service |")
         for count, value in enumerate(record):
@@ -48,7 +51,7 @@ class Query_manager:
     
     def display_all_passwords(self) -> None:
         cursor = self.connection.cursor()
-        cursor.execute("select * from passwords;")
+        cursor.execute(f"select * from {self.config['TABLE']};")
         record = cursor.fetchall()
         print("| id | - | service |")
         for count, value in enumerate(record):
@@ -59,7 +62,7 @@ class Query_manager:
     def display_password(self, id) -> None:
         fernet = Fernet(self.key)
         cursor = self.connection.cursor()
-        cursor.execute(f"select * from passwords where id = %s;", (id,))
+        cursor.execute(f"select * from {self.config['TABLE']} where id = %s;", (id,))
         record = cursor.fetchall()
         
         if len(record) == 0:
@@ -81,7 +84,7 @@ class Query_manager:
         mdp = input("Type your password (leave blank to generate a random password): \t")
         mdp = mdp or self.generate_password(20)
         cursor.execute(
-            f"insert into passwords (service, identifiant, mdp) values (%s, %s, %s);", 
+            f"insert into {self.config['TABLE']} (service, identifiant, mdp) values (%s, %s, %s);",
             (service, identifiant, fernet.encrypt(mdp.encode()))
         )
         self.connection.commit()
@@ -91,7 +94,7 @@ class Query_manager:
     def edit_password(self, id) -> None:
         fernet = Fernet(self.key)
         cursor = self.connection.cursor()
-        cursor.execute(f"select * from passwords where id = %s;", (id,))
+        cursor.execute(f"select * from {self.config['TABLE']} where id = %s;", (id,))
         record = cursor.fetchall()
         input_dict = {}
         
@@ -117,7 +120,7 @@ class Query_manager:
         
         input_dict.update({"mdp": mdp_input})
 
-        sql_query = "update passwords set "
+        sql_query = f"update {self.config['TABLE']} set "
         counter = 0 
 
         for key, value in input_dict.items():
@@ -134,8 +137,8 @@ class Query_manager:
                 counter += 1
         
         sql_query+=f"where id = {id}"
-        
-        if sql_query != f"update passwords set where id = {id}":
+
+        if sql_query != f"update {self.config['TABLE']} set where id = {id}":
             cursor.execute(
                     sql_query, 
                     (mdp_input,)
@@ -148,7 +151,7 @@ class Query_manager:
         
     def delete_password(self, id) -> None:
         cursor = self.connection.cursor()
-        cursor.execute(f"select * from passwords where id = %s;", (id,))
+        cursor.execute(f"select * from {self.config['TABLE']} where id = %s;", (id,))
         record = cursor.fetchall()
         
         if len(record) == 0:
@@ -156,7 +159,7 @@ class Query_manager:
             return None
         
         cursor.execute(
-            f"delete from passwords where id = %s ", 
+            f"delete from {self.config['TABLE']} where id = %s ", 
             (id,)
         )
         self.connection.commit()
@@ -166,7 +169,7 @@ class Query_manager:
     def export_passwords(self, option: bool) -> None:
         fernet = Fernet(self.key)
         cursor = self.connection.cursor()
-        cursor.execute("select * from passwords;")
+        cursor.execute(f"select * from {self.config['TABLE']};")
         record = cursor.fetchall()
         if len(record) == 0:
             print("No password found")

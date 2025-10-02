@@ -57,7 +57,7 @@ def main():
                     search_loop(bdd_connection)
                     
                     passId = input("Choose password to reveal : \t")
-                    if passId is not '':
+                    if passId != '':
                         bdd_connection.display_password(passId)
                     else:
                         print("\naborted")
@@ -71,7 +71,7 @@ def main():
                     search_loop(bdd_connection)
                     
                     id_input = input("Which one do you want to update ? \t") 
-                    if id_input is not '' and id_input.isdigit():        
+                    if id_input != '' and id_input.isdigit():        
                         bdd_connection.edit_password(int(id_input))
                     else:
                         print("\naborted")
@@ -82,7 +82,7 @@ def main():
                     search_loop(bdd_connection)
                     
                     id_input = input("Which record do you want to delete ? \t")
-                    if id_input is not '' and id_input.isdigit():
+                    if id_input != '' and id_input.isdigit():
                         bdd_connection.delete_password(int(id_input))
                     else:
                         print("\naborted")
