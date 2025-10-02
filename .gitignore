@@ -2,3 +2,4 @@
 logs/
 *.lock
 .env
+__pycache__/
